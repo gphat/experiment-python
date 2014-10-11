@@ -14,7 +14,7 @@ class ExperimentResult(object):
     def get_experiment_result(self):
         return self.experiment_result
 
-    def did_match(self):
+    def matches(self):
         if(self.experiment_result.exception() != None and self.control_result.exception() != None):
             # Compare the exceptions
             # http://stackoverflow.com/questions/15844131/comparing-exception-objects-in-python

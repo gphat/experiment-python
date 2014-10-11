@@ -14,5 +14,4 @@ class TestExperiment(object):
 
     def test_matching_experiment(self):
         result = Experiment(control=slow_ok, experiment=fast_ok).result()
-        # exp = yield result
-        t.assert_true(result.did_match())
+        t.assert_true(result.matches())
