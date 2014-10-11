@@ -1,5 +1,7 @@
 Experiment is a Python module inspired by GitHub's [dat-science](https://github.com/github/dat-science).
 
+It uses a Python's [futures](https://pypi.python.org/pypi/futures).
+
 # Usage
 
 ```python
