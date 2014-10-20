@@ -50,6 +50,8 @@ class Experiment(Future):
         self.experiment_result = None
         self.experiment_seen = None
 
+        self.total_future = Future()
+
         with ThreadPoolExecutor(max_workers=2) as executor:
             executor.submit(control).add_done_callback(self.store_control)
             executor.submit(experiment).add_done_callback(self.store_experiment)
@@ -57,6 +59,8 @@ class Experiment(Future):
     def store_control(self, future):
         self.control_seen = time.time()
         self.control_result = future
+        # When the control is completed, we'll complete "this" future.
+        self.set_result(future.result())
         self.check_results()
 
     def store_experiment(self, future):
@@ -64,12 +68,15 @@ class Experiment(Future):
         self.experiment_result = future
         self.check_results()
 
+    def get_future(self):
+        return self.total_future
+
     def check_results(self):
         # XXX How do we ensure no race condition here?
         if self.experiment_seen != None and self.control_seen != None:
             # Always return the control's result as the result
             # of our future.
-            return self.set_result(ExperimentResult(
+            self.total_future.set_result(ExperimentResult(
                 self.control_result,
                 self.control_seen,
                 self.experiment_result,
